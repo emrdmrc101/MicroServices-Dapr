@@ -1,0 +1,131 @@
+version: '3.9'
+
+services:
+    
+  dapr-placement:
+    image: "daprio/dapr:latest"
+    command: ["./placement", "-port", "5005"]
+    ports:
+      - "5005:5005"
+      - "9090:9090"
+    networks:
+      - dapr-network
+
+  dapr-dashboard:
+    image: "daprio/dashboard:latest"
+    container_name: dapr-dashboard
+    ports:
+      - "8092:8080"
+    environment:
+      - DAPR_HOST=dapr-placement:5005
+    depends_on:
+      - dapr-placement
+    networks:
+      - dapr-network
+    volumes:
+      - ./components:/home/nonroot/.dapr/components
+
+  dapr-central:
+    image: "daprio/daprd:latest"
+    container_name: dapr-central
+    command: [
+      "./daprd",
+     "--app-id", "dapr-central",
+      "--dapr-http-port", "3545",
+      "--dapr-grpc-port", "5001",
+      "--placement-host-address", "host.docker.internal:5005",
+      "--config", "/components/configuration.yaml"
+    ]
+    ports:
+      - "3545:3545"
+      - "5001:5001"
+    volumes:
+      - ./components:/components
+    networks:
+      - dapr-network
+
+  dapr-sidecar-lesson:
+    image: "daprio/daprd:latest"
+    command: [
+      "./daprd",
+      "--app-id", "lesson-service",
+      "--app-port", "5060",
+      "--dapr-http-port", "3500",
+      "--dapr-grpc-port", "5002",
+      "--placement-host-address", "host.docker.internal:5005",
+      "--resources-path", "/components",
+      "--metrics-port", "9089",
+      "--config", "/components/configuration.yaml"
+    ]
+    volumes:
+      - ./resources:/resources
+    networks:
+      - dapr-network
+
+  dapr-sidecar-activity:
+    image: "daprio/daprd:latest"
+    command: [
+      "./daprd",
+      "--app-id", "activity-service",
+      "--app-port", "5041",
+      "--dapr-http-port", "3501",
+      "--dapr-grpc-port", "5003",
+      "--app-channel-address", "host.docker.internal", 
+      "--placement-host-address", "dapr-placement:5005",
+      "--resources-path", "/components",
+      "--metrics-port", "9091",
+      "--config", "/components/configuration.yaml"
+    ]
+    ports:
+      - "3501:3501"
+      - "5003:5003"
+      - "9091:9091"
+    volumes:
+      - ./components:/components
+    networks:
+      - dapr-network
+    
+  dapr-sidecar-activity-grpc:
+    image: "daprio/daprd:latest"
+    command: [
+      "./daprd",
+      "--app-id", "activity-service-grpc",
+      "--app-port", "5242",
+      "--dapr-http-port", "3502",
+      "--dapr-grpc-port", "5004",
+      "--app-protocol", "grpc",
+      "--app-channel-address", "host.docker.internal", 
+      "--placement-host-address", "host.docker.internal:5005",
+      "--resources-path", "/components",
+      "--metrics-port", "9092",
+      "--config", "/components/configuration.yaml"
+    ]
+    ports:
+      - "3502:3502"
+      - "5004:5004"
+      - "9092:9092"
+    volumes:
+      - ./components:/components
+    networks:
+      - dapr-network
+
+  dapr-sidecar-identity:
+    image: "daprio/daprd:latest"
+    command: [
+      "./daprd",
+      "--app-id", "identity-service",
+      "--app-port", "5067",
+      "--dapr-http-port", "3503",
+      "--dapr-grpc-port", "5035",
+      "--placement-host-address", "host.docker.internal:5005",
+      "--resources-path", "/components",
+      "--metrics-port", "9093",
+      "--config", "/components/configuration.yaml"
+    ]
+    networks:
+      - dapr-network
+
+networks:
+  dapr-network:
+    name: dapr-network
+    driver: bridge

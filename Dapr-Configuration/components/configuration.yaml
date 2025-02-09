@@ -1,0 +1,10 @@
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: dapr-config
+spec:
+  metric:
+    enabled: true
+    prometheus:
+      enabled: true
+      host: "http://host.docker.internal:9090"
