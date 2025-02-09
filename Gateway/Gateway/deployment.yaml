@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway
+  labels:
+    app: apigateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apigateway
+  template:
+    metadata:
+      labels:
+        app: apigateway
+    spec:
+      containers:
+        - name: apigateway
+          image: emredem/apigateway:v1.5
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5081
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:5081"
+      imagePullSecrets:
+        - name: emredemkey3
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: apigateway-appsettings-config

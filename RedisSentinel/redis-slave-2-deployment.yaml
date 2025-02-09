@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yaml
+    kompose.version: 1.34.0 (HEAD)
+  labels:
+    io.kompose.service: redis-slave-2
+  name: redis-slave-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: redis-slave-2
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yaml
+        kompose.version: 1.34.0 (HEAD)
+      labels:
+        io.kompose.service: redis-slave-2
+    spec:
+      containers:
+        - args:
+            - redis-server
+            - --port
+            - "6375"
+            - --appendonly
+            - "yes"
+            - --slaveof
+            - redis-master
+            - "6379"
+          image: redis:latest
+          name: redis-slave-2
+          ports:
+            - containerPort: 6375
+              protocol: TCP
+      restartPolicy: Always

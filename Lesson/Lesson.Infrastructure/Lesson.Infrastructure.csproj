@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MongoDB.Driver" Version="3.1.0"/>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.67.0"/>
+        <PackageReference Include="Grpc.Tools" Version="2.68.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Grpc/Protos"/>
+        <Protobuf Include="Grpc/Protos/activity.proto" GrpcServices="Client">
+            <Link>Grpc/Protos/activity.proto</Link>
+        </Protobuf>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.1" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+        <PackageReference Include="Autofac" Version="8.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\Migrations\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Lesson.Application\Lesson.Application.csproj" />
+      <ProjectReference Include="..\Lesson.Domain\Lesson.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Saga">
+        <HintPath>..\..\Saga\Saga\bin\Debug\net8.0\Saga.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: identityservice
+spec:
+  selector:
+    app: identityservice
+  ports:
+    - protocol: TCP
+      name: "5067"
+      port: 5067
+      targetPort: 5067
+  type: LoadBalancer
+  

@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: identityservice-appsettings-config
+data:
+  appsettings.Development.json: |
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      }
+    }
+  appsettings.json: | 
+    {
+      "Logging": {
+        "Serilog": {
+          "MinimumLevel": {
+            "Default": "Information",
+            "Override": {
+              "Microsoft": "Information",
+              "System": "Warning"
+            }
+          }
+        },
+        "LoggerType": "Serilog"
+      },
+      "AllowedHosts": "*",
+      "ServiceName":"EDemApp.IdentityService",
+      "Consul": {
+        "ServiceName": "IdentityService",
+        "ServiceId" : "c60668033f6849529ca479359b76b5a3",
+        "ConfigName":"IdentityServiceConfig",
+        "Vault": {
+          "token": "hvs.Ivh7vru7LjOsUZFSdUPdnNii",
+          "Address": "http://vault:8200"
+        }
+      }
+    }
+

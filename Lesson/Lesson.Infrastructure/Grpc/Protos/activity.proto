@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package Activity;
+
+service ActivityServiceGrpc {
+    rpc GetActivitiesByLessonId (GetActivitiesByLessonIdRequest) returns (GetActivitiesByLessonIdResponse);
+}
+
+service NotificationServiceGrpcForActivity {
+    rpc SubscribeActivities (ActivityNotificationPushRequest) returns (stream ActivityNotificationResponse);
+}
+
+// GetActivitiesByLessonId
+message GetActivitiesByLessonIdRequest {
+    string LessonId = 1;
+}
+message GetActivitiesByLessonIdResponse {
+    repeated ActivityResponse activities = 1;
+}
+message ActivityResponse {
+    string id = 1;
+    string lessonId = 2;
+    string firstName = 3;
+    string lastName = 4;
+    string activityType = 5;
+    string contentType = 6;
+}
+
+// NotificationServiceGrpcForActivity
+message ActivityNotificationRequest {
+    string lessonId = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string activityType = 4;
+    string contentType = 5;
+    string userId = 6;
+    string id = 7;
+
+}
+message ActivityNotificationPushRequest {
+    string lessonId = 1;
+}
+message ActivityNotificationResponse {
+    string lessonId = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string activityType = 4;
+    string contentType = 5;
+    string userId = 6;
+    string id = 7;
+    string timestamp = 8;
+}

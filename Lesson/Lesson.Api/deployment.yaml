@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lessonservice
+  labels:
+    app: lessonservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lessonservice
+  template:
+    metadata:
+      labels:
+        app: lessonservice
+    spec:
+      containers:
+        - name: lessonservice
+          image: emredem/lessonservice:v2.4
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5060
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://lessonservice:5060"
+      imagePullSecrets:
+        - name: emredemkey3
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: lessonservice-appsettings-config

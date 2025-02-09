@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identityservice-deployment
+  labels:
+    app: identityservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: identityservice
+  template:
+    metadata:
+      labels:
+        app: identityservice
+    spec:
+      containers:
+        - name: identityservice
+          image: emredem/identityservice:v2.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5067
+              protocol: TCP
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:5067"
+      imagePullSecrets:
+        - name: emredemkey3
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: identityservice-appsettings-config
